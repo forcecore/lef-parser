@@ -68,7 +68,7 @@ class DefParser:
                         self.design_name = info[1]
                     elif info[0] == "UNITS":
                         self.units = info[2]
-                        self.scale = info[3]
+                        self.scale = int(info[3])
                     elif info[0] == "PROPERTYDEFINITIONS":
                         new_property = Property()
                         self.stack.append(new_property)

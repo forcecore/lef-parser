@@ -35,6 +35,9 @@ class Statement:
             name = data[1]
             new_state = Via(name)
             return new_state
+        elif data[0] == "UNITS":
+            new_state = Units()
+            return new_state
         elif data[0] == "END":
             return 1
         return 0
@@ -398,3 +401,28 @@ class Via(Statement):
             self.layers.add_polygon(data)
         return 0
 
+class Units(Statement):
+    def __init__(self):
+        Statement.__init__(self)
+        self.type = "UNITS"
+        self.units = dict()
+
+    def parse_next(self, data):
+        if data[0] == "END":
+            if data[1] == "UNITS":
+                return 1 # successful parse end
+            else:
+                return -1 # wrong input
+        elif (data[0] == "TIME" and data[1] == "NANOSECONDS") or \
+                (data[0] == "CAPACITANCE" and data[1] == "PICOFARADS") or \
+                (data[0] == "RESISTANCE" and data[1] == "OHMS") or \
+                (data[0] == "POWER" and data[1] == "MILLIWATTS") or \
+                (data[0] == "CURRENT" and data[1] == "MILLIAMPS") or \
+                (data[0] == "VOLTAGE" and data[1] == "VOLTS") or \
+                (data[0] == "DATABASE" and data[1] == "MICRONS") or \
+                (data[0] == "FREQUENCY" and data[1] == "MEGAHERTZ") :
+            factor = int(data[2]) # int, as defined in LEF DEF reference.
+            assert data[0] not in self.units # You can't define twice.
+            self.units[data[0]] = (factor, data[1])
+
+        return 0

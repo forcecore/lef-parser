@@ -24,6 +24,7 @@ class LefParser:
         self.stack = []
         # store the statements info in a list
         self.statements = []
+        self.units = {}
         self.cell_height = -1
 
     def get_cell_height(self):
@@ -48,7 +49,7 @@ class LefParser:
                 # check if the program is processing a statement
                 #print (info)
                 if len(self.stack) != 0:
-                    curState = self.stack[len(self.stack) - 1]
+                    curState = self.stack[-1]
                     nextState = curState.parse_next(info)
                 else:
                     curState = Statement()
@@ -69,6 +70,8 @@ class LefParser:
                             self.layer_dict[done_obj.name] = done_obj
                         elif isinstance(done_obj, Via):
                             self.via_dict[done_obj.name] = done_obj
+                        elif isinstance(done_obj, Units):
+                            self.units = done_obj.units
                         self.statements.append(done_obj)
                 elif nextState == -1:
                     pass
